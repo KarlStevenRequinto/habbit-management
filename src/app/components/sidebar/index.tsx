@@ -1,10 +1,25 @@
 import React from "react";
+import { useViewModel } from "./useViewModel";
+interface SidebarProps {
+    collapse: boolean;
+    toggleSidebar: () => void;
+}
 
-const Sidebar = () => {
+const Sidebar = ({ collapse, toggleSidebar }: SidebarProps) => {
+    const sidebarWidth = collapse ? 56 : 356;
     return (
-        <aside className="fixed top-14 left-0 h-[calc(100vh-56px)] bg-white w-[356px] shadow-md flex flex-col">
-            {/* Sidebar content goes here */}
-            Sidebar
+        <aside
+            className="fixed top-14 left-0 h-[calc(100vh-56px)] bg-white shadow-md flex flex-col z-40 transition-all duration-300"
+            style={{ width: sidebarWidth }}
+        >
+            <button
+                className="h-10 w-10 m-2 rounded bg-gray-200 hover:bg-gray-300 transition"
+                onClick={toggleSidebar}
+                aria-label={collapse ? "Expand sidebar" : "Collapse sidebar"}
+            >
+                {collapse ? "→" : "←"}
+            </button>
+            {!collapse && <div className="p-4">Sidebar</div>}
         </aside>
     );
 };
