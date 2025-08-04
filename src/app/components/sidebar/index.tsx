@@ -1,5 +1,5 @@
 import React from "react";
-import { useViewModel } from "./useViewModel";
+import Link from "next/link";
 interface SidebarProps {
     collapse: boolean;
     toggleSidebar: () => void;
@@ -19,7 +19,19 @@ const Sidebar = ({ collapse, toggleSidebar }: SidebarProps) => {
             >
                 {collapse ? "→" : "←"}
             </button>
-            {!collapse && <div className="p-4">Sidebar</div>}
+            {!collapse && (
+                <div className="p-4 flex flex-col">
+                    <Link href="/" className="hover:underline">
+                        Dashboard Page
+                    </Link>
+                    <Link href="/to-do" className="hover:underline">
+                        Todo Page
+                    </Link>
+                    <Link href="/expenses" className="hover:underline">
+                        Expenses Page
+                    </Link>
+                </div>
+            )}
         </aside>
     );
 };
