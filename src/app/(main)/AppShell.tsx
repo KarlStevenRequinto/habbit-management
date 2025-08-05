@@ -11,11 +11,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <>
             <Navbar />
             <Sidebar collapse={collapsed} toggleSidebar={toggleSidebar} />
-            <main
-                className="min-h-[calc(100vh-56px)] flex items-center justify-center transition-all duration-300"
-                style={{ marginLeft: sidebarWidth }}
-            >
-                {children}
+            <main className="h-screen pt-16 px-2 pb-2 transition-all duration-300" style={{ marginLeft: sidebarWidth }}>
+                <div className="h-full w-full flex items-center justify-center">{children}</div>
             </main>
         </>
     );
