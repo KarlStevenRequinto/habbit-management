@@ -2,14 +2,17 @@
 
 import React from "react";
 import MainContainer from "@/app/components/main-container";
-import { areaChartData, barChartData } from "@/app/constants/chartData";
+import { areaChartData, barChartData, months } from "@/app/constants/chartData";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, BarChart, Bar } from "recharts";
 
 const ExpensesPage = () => {
     return (
         <MainContainer>
             {/* Top section: 2/3 height */}
-            <div className="min-h-[500px] flex-2 flex flex-col lg:flex-row w-full">
+
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Spending Overview</h3>
+
+            <div className="bg-white rounded-xl mb-2  flex-2 flex flex-col lg:flex-row w-full ">
                 <div className="flex-1">
                     <AreaChart width={730} height={250} data={areaChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                         <defs>
@@ -36,9 +39,103 @@ const ExpensesPage = () => {
             </div>
 
             {/* Bottom section: 1/3 height */}
-            <div className="flex-1 bg-yellow-200 min-h-[500px]">All Expenses section here</div>
+            <div className="flex-1 bg-white rounded-xl shadow-sm p-4">
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-bold text-gray-800">Projects</h2>
+                    <span className="text-sm text-green-500">30 done this month</span>
+                </div>
+                <table className="w-full text-left table-auto">
+                    <thead>
+                        <tr className="text-xs text-gray-500 uppercase">
+                            <th className="py-2 px-3">Categories</th>
+                            {months.map((month) => (
+                                <th key={month} className="py-2 px-3">
+                                    {month}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody className="text-sm text-gray-700">
+                        <tr className="border-t">
+                            <td className="py-3 px-3 font-medium">Category 1</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                        </tr>
+                        <tr className="border-t">
+                            <td className="py-3 px-3 font-medium">Category 2</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                        </tr>
+                        <tr className="border-t">
+                            <td className="py-3 px-3 font-medium">Category 3</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                        </tr>
+                        <tr className="border-t">
+                            <td className="py-3 px-3 font-medium">Category 4</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                        </tr>
+                        <tr className="border-t">
+                            <td className="py-3 px-3 font-medium">Category 5</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">-</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                            <td className="py-3 px-3">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-            <div className="flex-1 bg-red-400 min-h-[500px]">All Expenses section here</div>
+            {/* <div className="flex-1 bg-red-400 min-h-[500px]">All Expenses section here</div> */}
         </MainContainer>
     );
 };
