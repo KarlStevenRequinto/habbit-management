@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import MainContainer from "../components/main-container";
 
 interface Todo {
     id: number;
@@ -37,7 +38,7 @@ export default function Dashboard() {
     };
 
     return (
-        <div style={{ maxWidth: 400, margin: "40px auto", textAlign: "center" }}>
+        <MainContainer>
             <h2>📝 Todo List</h2>
             <form onSubmit={handleAddTodo}>
                 <input
@@ -74,6 +75,6 @@ export default function Dashboard() {
                     </li>
                 ))}
             </ul>
-        </div>
+        </MainContainer>
     );
 }
