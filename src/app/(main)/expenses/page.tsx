@@ -1,140 +1,197 @@
 "use client";
+import React, { useState } from "react";
 
-import React from "react";
 import MainContainer from "@/app/components/main-container";
-import { areaChartData, barChartData, months } from "@/app/constants/chartData";
+import { areaChartData, barChartData } from "@/app/constants/chartData";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, BarChart, Bar } from "recharts";
+import DropDownSelect from "@/app/components/dropdown-select";
+import CardHeader from "@/app/components/card-header";
+import CardModal from "@/app/components/card-modal";
 
 const ExpensesPage = () => {
+    const [openCategoryModal, setOpenCategoryModal] = useState(false);
+    const [openExpenseModal, setOpenExpenseModal] = useState(false);
+    const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
+    const months = Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString("en-US", { month: "long" }));
+
     return (
         <MainContainer>
-            {/* Top section: 2/3 height */}
+            {/* header */}
+            <div className="bg-gray-100 p-2 h-full gap-2 flex flex-col">
+                <header className="flex items-center justify-between">
+                    <h1 className="text-2xl font-bold text-gray-800">Expense Tracker</h1>
+                </header>
 
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Spending Overview</h3>
+                {/* filter */}
+                <div className="py-2">
+                    <div className="flex justify-between items-center mb-2">
+                        {/* componentize this */}
+                        <div className="flex space-x-4">
+                            <button className="btn btn-outline btn-primary" onClick={() => setOpenCategoryModal(true)}>
+                                + Add Category
+                            </button>
+                            <button className="btn btn-outline btn-primary" onClick={() => setOpenExpenseModal(true)}>
+                                + Add Expense
+                            </button>
+                        </div>
 
-            <div className="bg-white rounded-xl mb-2  flex-2 flex flex-col lg:flex-row w-full ">
-                <div className="flex-1">
-                    <AreaChart width={730} height={250} data={areaChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                        <defs>
-                            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                                <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                            </linearGradient>
-                        </defs>
-                        <XAxis dataKey="name" />
-                        <YAxis />
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <Tooltip />
-                        <Area type="monotone" dataKey="uv" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
-                    </AreaChart>
+                        <div className="flex gap-4">
+                            <DropDownSelect
+                                items={months}
+                                className="select select-primary bg-transparent w-36 cursor-pointer"
+                                onChange={(e) => e.target.blur()}
+                                defaultLabel="Select Month"
+                            />
+
+                            <DropDownSelect
+                                items={years.map(String)}
+                                className="select select-primary bg-transparent w-36 cursor-pointer"
+                                onChange={(e) => e.target.blur()}
+                                defaultLabel="Select Year"
+                            />
+                        </div>
+                    </div>
+                    {/* componentize this */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                        <CardHeader headerText="Total Balance" subText="$3,250.00" />
+                        <CardHeader headerText="Income" subText="+$4,000.00" subTextStyle="text-green-600" />
+                        <CardHeader headerText="Expenses" subText="-$750.00" subTextStyle="text-red-600" />
+                    </div>
                 </div>
-                <div className="flex-1 bg-green-200">
-                    graph of expenses by category here
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart width={150} height={40} data={barChartData}>
-                            <Bar dataKey="uv" fill="#8884d8" />
-                        </BarChart>
-                    </ResponsiveContainer>
+
+                {/* graphs */}
+                <div className="bg-white rounded-xl mb-2  flex-2 flex flex-col lg:flex-row w-full ">
+                    <div className="flex-1 flex justify-center items-center">
+                        <AreaChart width={730} height={250} data={areaChartData}>
+                            <defs>
+                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                                </linearGradient>
+                            </defs>
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <Tooltip />
+                            <Area type="monotone" dataKey="uv" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+                        </AreaChart>
+                    </div>
+                    <div className="flex-1 bg-green-200">
+                        <ResponsiveContainer>
+                            <BarChart width={600} height={300} data={barChartData}>
+                                <XAxis dataKey="name" stroke="#8884d8" />
+                                <YAxis />
+                                <Tooltip />
+                                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                                <Bar dataKey="val" fill="#8884d8" barSize={30} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                {/* Bottom section: 1/3 height */}
+                <div className="flex-1 bg-white rounded-xl shadow-sm p-4">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg font-bold text-gray-800">Projects</h2>
+                        <span className="text-sm text-green-500">30 done this month</span>
+                    </div>
+                    <table className="w-full text-left table-auto">
+                        <thead>
+                            <tr className="text-xs text-gray-500 uppercase">
+                                <th className="py-2 px-3">Categories</th>
+                                {months.map((month) => (
+                                    <th key={month} className="py-2 px-3">
+                                        {month}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody className="text-sm text-gray-700">
+                            <tr className="border-t">
+                                <td className="py-3 px-3 font-medium">Category 1</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                            </tr>
+                            <tr className="border-t">
+                                <td className="py-3 px-3 font-medium">Category 2</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                            </tr>
+                            <tr className="border-t">
+                                <td className="py-3 px-3 font-medium">Category 3</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                            </tr>
+                            <tr className="border-t">
+                                <td className="py-3 px-3 font-medium">Category 4</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                            </tr>
+                            <tr className="border-t">
+                                <td className="py-3 px-3 font-medium">Category 5</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">-</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                                <td className="py-3 px-3">✓</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            {/* Bottom section: 1/3 height */}
-            <div className="flex-1 bg-white rounded-xl shadow-sm p-4">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg font-bold text-gray-800">Projects</h2>
-                    <span className="text-sm text-green-500">30 done this month</span>
-                </div>
-                <table className="w-full text-left table-auto">
-                    <thead>
-                        <tr className="text-xs text-gray-500 uppercase">
-                            <th className="py-2 px-3">Categories</th>
-                            {months.map((month) => (
-                                <th key={month} className="py-2 px-3">
-                                    {month}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="text-sm text-gray-700">
-                        <tr className="border-t">
-                            <td className="py-3 px-3 font-medium">Category 1</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                        </tr>
-                        <tr className="border-t">
-                            <td className="py-3 px-3 font-medium">Category 2</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                        </tr>
-                        <tr className="border-t">
-                            <td className="py-3 px-3 font-medium">Category 3</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                        </tr>
-                        <tr className="border-t">
-                            <td className="py-3 px-3 font-medium">Category 4</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                        </tr>
-                        <tr className="border-t">
-                            <td className="py-3 px-3 font-medium">Category 5</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">-</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                            <td className="py-3 px-3">✓</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
+            <CardModal open={openCategoryModal} onClose={() => setOpenCategoryModal(false)} title="Add Category" buttonText="Close">
+                <p className="py-2">Put your form here.</p>
+            </CardModal>
+            <CardModal open={openExpenseModal} onClose={() => setOpenExpenseModal(false)} title="Add Expense" buttonText="Close">
+                <p className="py-2">Put your form here.</p>
+            </CardModal>
             {/* <div className="flex-1 bg-red-400 min-h-[500px]">All Expenses section here</div> */}
         </MainContainer>
     );
