@@ -21,6 +21,11 @@ const ExpensesPage = () => {
         onYearChange,
         selectedMonth,
         selectedYear,
+        categories,
+        categoriesById,
+        onAddCategory,
+        onRenameCategory,
+        onDeleteCategory,
     } = useViewModel();
 
     return (
@@ -124,81 +129,23 @@ const ExpensesPage = () => {
                             </tr>
                         </thead>
                         <tbody className="text-sm text-gray-700">
-                            <tr className="border-t">
-                                <td className="py-3 px-3 font-medium">Category 1</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                            </tr>
-                            <tr className="border-t">
-                                <td className="py-3 px-3 font-medium">Category 2</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                            </tr>
-                            <tr className="border-t">
-                                <td className="py-3 px-3 font-medium">Category 3</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                            </tr>
-                            <tr className="border-t">
-                                <td className="py-3 px-3 font-medium">Category 4</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                            </tr>
-                            <tr className="border-t">
-                                <td className="py-3 px-3 font-medium">Category 5</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">-</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                                <td className="py-3 px-3">✓</td>
-                            </tr>
+                            {categories.map((cat) => (
+                                <tr key={cat.id} className="border-t">
+                                    <td className="py-3 px-3 font-medium">{cat.name}</td>
+                                    {/* ...12 month cells go here, using your derived totals ... */}
+                                    <td className="py-3 px-3 text-right space-x-2">
+                                        <button
+                                            className="btn btn-xs"
+                                            onClick={() => onRenameCategory(cat.id, prompt("Rename:", cat.name) ?? cat.name)}
+                                        >
+                                            Rename
+                                        </button>
+                                        <button className="btn btn-xs btn-error" onClick={() => onDeleteCategory(cat.id)}>
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 </div>
