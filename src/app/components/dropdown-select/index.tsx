@@ -5,18 +5,12 @@ interface DropDownSelectProps {
     defaultLabel?: string;
     className?: string;
     onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+    value: string | "";
 }
 
-const DropDownSelect = ({ items, defaultLabel, className, onChange }: DropDownSelectProps) => {
+const DropDownSelect = ({ items, defaultLabel, className, value, onChange }: DropDownSelectProps) => {
     return (
-        <select
-            defaultValue={defaultLabel}
-            className={className}
-            onChange={() => {
-                onChange;
-            }}
-            style={{ borderRadius: "0px" }}
-        >
+        <select value={value} defaultValue={defaultLabel} className={className} onChange={onChange} style={{ borderRadius: "0px" }}>
             <option disabled>{defaultLabel}</option>
             {items.map((item, idx) => (
                 <option key={idx} value={item}>

@@ -10,7 +10,18 @@ import CardModal from "@/app/components/card-modal";
 import { useViewModel } from "./useViewModel";
 
 const ExpensesPage = () => {
-    const { openCategoryModal, setOpenCategoryModal, openExpenseModal, setOpenExpenseModal, years, months } = useViewModel();
+    const {
+        openCategoryModal,
+        setOpenCategoryModal,
+        openExpenseModal,
+        setOpenExpenseModal,
+        years,
+        months,
+        onMonthChange,
+        onYearChange,
+        selectedMonth,
+        selectedYear,
+    } = useViewModel();
 
     return (
         <MainContainer>
@@ -36,16 +47,24 @@ const ExpensesPage = () => {
                         <div className="flex gap-4">
                             <DropDownSelect
                                 items={months}
-                                className="select select-primary bg-transparent w-36 cursor-pointer"
-                                onChange={(e) => e.target.blur()}
+                                value={selectedMonth}
+                                onChange={(e) => {
+                                    onMonthChange(e.target.value);
+                                    e.target.blur();
+                                }}
                                 defaultLabel="Select Month"
+                                className="select select-primary bg-transparent w-36 cursor-pointer"
                             />
 
                             <DropDownSelect
-                                items={years.map(String)}
-                                className="select select-primary bg-transparent w-36 cursor-pointer"
-                                onChange={(e) => e.target.blur()}
+                                items={years}
+                                value={selectedYear}
+                                onChange={(e) => {
+                                    onYearChange(e.target.value);
+                                    e.target.blur();
+                                }}
                                 defaultLabel="Select Year"
+                                className="select select-primary bg-transparent w-36 cursor-pointer"
                             />
                         </div>
                     </div>
