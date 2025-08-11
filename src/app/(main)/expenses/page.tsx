@@ -7,12 +7,10 @@ import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContai
 import DropDownSelect from "@/app/components/dropdown-select";
 import CardHeader from "@/app/components/card-header";
 import CardModal from "@/app/components/card-modal";
+import { useViewModel } from "./useViewModel";
 
 const ExpensesPage = () => {
-    const [openCategoryModal, setOpenCategoryModal] = useState(false);
-    const [openExpenseModal, setOpenExpenseModal] = useState(false);
-    const years = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() - i);
-    const months = Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString("en-US", { month: "long" }));
+    const { openCategoryModal, setOpenCategoryModal, openExpenseModal, setOpenExpenseModal, years, months } = useViewModel();
 
     return (
         <MainContainer>
