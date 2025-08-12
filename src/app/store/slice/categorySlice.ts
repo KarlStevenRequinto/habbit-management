@@ -7,7 +7,7 @@ export type Category = {
     updatedAt: string;
 };
 
-type CategoriesState = {
+export type CategoriesState = {
     items: Category[];
 };
 

@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { Provider } from "react-redux";
-import { store } from "./store";
 import Providers from "./providers";
 
 const poppins = Poppins({

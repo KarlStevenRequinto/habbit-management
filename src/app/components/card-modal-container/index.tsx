@@ -10,7 +10,7 @@ type CardModalProps = {
     lockScroll?: boolean;
 };
 
-export default function CardModal({ open, onClose, title, buttonText, children, lockScroll = false }: CardModalProps) {
+export default function CardModalContainer({ open, onClose, title, buttonText, children, lockScroll = false }: CardModalProps) {
     const panelRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -39,11 +39,6 @@ export default function CardModal({ open, onClose, title, buttonText, children, 
             <div ref={panelRef} className="relative w-11/12 max-w-5xl bg-[var(--background)] rounded-2xl shadow-xl p-6">
                 {title ? <h3 className="font-bold text-lg mb-2">{title}</h3> : null}
                 <div className="py-2 flex items-center justify-center">{children}</div>
-                <div className="mt-6 flex justify-end gap-2">
-                    <button className="btn" onClick={onClose}>
-                        {buttonText}
-                    </button>
-                </div>
             </div>
         </div>
     );

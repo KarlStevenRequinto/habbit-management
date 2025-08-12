@@ -6,8 +6,9 @@ import { areaChartData, barChartData } from "@/app/constants/chartData";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, BarChart, Bar } from "recharts";
 import DropDownSelect from "@/app/components/dropdown-select";
 import CardHeader from "@/app/components/card-header";
-import CardModal from "@/app/components/card-modal";
+import CardModalContainer from "@/app/components/card-modal-container";
 import { useViewModel } from "./useViewModel";
+import CategoryForm from "@/app/components/(forms)/category-form";
 
 const ExpensesPage = () => {
     const {
@@ -150,12 +151,12 @@ const ExpensesPage = () => {
                     </table>
                 </div>
             </div>
-            <CardModal open={openCategoryModal} onClose={() => setOpenCategoryModal(false)} title="Add Category" buttonText="Close">
+            <CardModalContainer open={openCategoryModal} onClose={() => setOpenCategoryModal(false)} title="Add Category">
+                <CategoryForm onSubmit={onAddCategory} onClose={() => setOpenCategoryModal(false)} categories={categories} />
+            </CardModalContainer>
+            <CardModalContainer open={openExpenseModal} onClose={() => setOpenExpenseModal(false)} title="Add Expense" buttonText="Close">
                 <p className="py-2">Put your form here.</p>
-            </CardModal>
-            <CardModal open={openExpenseModal} onClose={() => setOpenExpenseModal(false)} title="Add Expense" buttonText="Close">
-                <p className="py-2">Put your form here.</p>
-            </CardModal>
+            </CardModalContainer>
             {/* <div className="flex-1 bg-red-400 min-h-[500px]">All Expenses section here</div> */}
         </MainContainer>
     );
