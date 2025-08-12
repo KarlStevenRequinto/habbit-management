@@ -6,8 +6,6 @@ import { useState, useMemo, useEffect } from "react";
 export const useViewModel = () => {
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
     const [openExpenseModal, setOpenExpenseModal] = useState(false);
-    const [selectedMonth, setSelectedMonth] = useState<string>("");
-    const [selectedYear, setSelectedYear] = useState<string>("");
 
     const dispatch = useAppDispatch();
     const categories = useAppSelector(selectCategoriesSorted);
@@ -15,12 +13,45 @@ export const useViewModel = () => {
     const MONTH_KEY = "expenses:selectedMonth";
     const YEAR_KEY = "expenses:selectedYear";
 
+    // fallbacks
     const now = new Date();
     const fallbackMonth = now.toLocaleString("en-US", { month: "long" });
     const fallbackYear = String(now.getFullYear());
 
+    // options
     const months = useMemo(() => Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString("en-US", { month: "long" })), []);
     const years = useMemo(() => Array.from({ length: 10 }, (_, i) => String(new Date().getFullYear() - i)), []);
+
+    // ✅ initialize from localStorage on first render (no flicker, controlled from start)
+    const [selectedMonth, setSelectedMonth] = useState<string>(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem(MONTH_KEY) ?? fallbackMonth;
+        }
+        return fallbackMonth;
+    });
+    const [selectedYear, setSelectedYear] = useState<string>(() => {
+        if (typeof window !== "undefined") {
+            return localStorage.getItem(YEAR_KEY) ?? fallbackYear;
+        }
+        return fallbackYear;
+    });
+
+    // persist whenever it changes
+    useEffect(() => {
+        if (selectedMonth) localStorage.setItem(MONTH_KEY, selectedMonth);
+    }, [selectedMonth]);
+
+    useEffect(() => {
+        if (selectedYear) localStorage.setItem(YEAR_KEY, selectedYear);
+    }, [selectedYear]);
+
+    // (optional) auto-heal if stored values are no longer in the options
+    useEffect(() => {
+        if (selectedMonth && !months.includes(selectedMonth)) setSelectedMonth(fallbackMonth);
+    }, [months, selectedMonth, fallbackMonth]);
+    useEffect(() => {
+        if (selectedYear && !years.includes(selectedYear)) setSelectedYear(fallbackYear);
+    }, [years, selectedYear, fallbackYear]);
 
     const onAddCategory = (name: string) => {
         if (name.trim()) dispatch(addCategory(name));
@@ -31,27 +62,12 @@ export const useViewModel = () => {
     const onDeleteCategory = (id: string) => {
         dispatch(deleteCategory({ id }));
     };
+
     const categoriesById = useMemo(() => {
         const m = new Map<string, string>();
         categories.forEach((c) => m.set(c.id, c.name));
         return m;
     }, [categories]);
-
-    useEffect(() => {
-        const m = localStorage.getItem(MONTH_KEY) ?? fallbackMonth;
-        const y = localStorage.getItem(YEAR_KEY) ?? fallbackYear;
-        setSelectedMonth(m);
-        setSelectedYear(y);
-    }, []);
-
-    // persist whenever it changes
-    useEffect(() => {
-        if (selectedMonth) localStorage.setItem(MONTH_KEY, selectedMonth);
-    }, [selectedMonth]);
-
-    useEffect(() => {
-        if (selectedYear) localStorage.setItem(YEAR_KEY, selectedYear);
-    }, [selectedYear]);
 
     return {
         openCategoryModal,

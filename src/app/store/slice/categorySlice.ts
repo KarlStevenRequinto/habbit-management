@@ -14,7 +14,11 @@ type CategoriesState = {
 const initialState: CategoriesState = {
     items: [
         // optional seed
-        // { id: "groceries", name: "Groceries", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+        { id: "groceries1", name: "Groceries1", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        { id: "groceries2", name: "Groceries2", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        { id: "groceries3", name: "Groceries3", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        { id: "groceries4", name: "Groceries4", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+        { id: "groceries5", name: "Groceries5", createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
     ],
 };
 
@@ -28,7 +32,6 @@ const categoriesSlice = createSlice({
                 return { payload: { id: nanoid(), name: name.trim(), createdAt: now, updatedAt: now } };
             },
             reducer: (state, action: PayloadAction<Category>) => {
-                // prevent duplicates by name (case-insensitive)
                 const exists = state.items.some((c) => c.name.toLowerCase() === action.payload.name.toLowerCase());
                 if (!exists) state.items.push(action.payload);
             },
