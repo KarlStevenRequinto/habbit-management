@@ -1,6 +1,7 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { addCategory, deleteCategory, selectCategoriesSorted, updateCategoryName } from "@/app/store/slice/categorySlice";
+import { addExpense, selectTotalsForYear } from "@/app/store/slice/expenseSlice";
 import { useState, useMemo, useEffect } from "react";
 
 export const useViewModel = () => {
@@ -22,7 +23,7 @@ export const useViewModel = () => {
     const months = useMemo(() => Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString("en-US", { month: "long" })), []);
     const years = useMemo(() => Array.from({ length: 10 }, (_, i) => String(new Date().getFullYear() - i)), []);
 
-    // ✅ initialize from localStorage on first render (no flicker, controlled from start)
+    // initialize from localStorage on first render (no flicker, controlled from start)
     const [selectedMonth, setSelectedMonth] = useState<string>(() => {
         if (typeof window !== "undefined") {
             return localStorage.getItem(MONTH_KEY) ?? fallbackMonth;
@@ -45,7 +46,6 @@ export const useViewModel = () => {
         if (selectedYear) localStorage.setItem(YEAR_KEY, selectedYear);
     }, [selectedYear]);
 
-    // (optional) auto-heal if stored values are no longer in the options
     useEffect(() => {
         if (selectedMonth && !months.includes(selectedMonth)) setSelectedMonth(fallbackMonth);
     }, [months, selectedMonth, fallbackMonth]);
@@ -62,13 +62,24 @@ export const useViewModel = () => {
     const onDeleteCategory = (id: string) => {
         dispatch(deleteCategory({ id }));
     };
-
+    const onAddExpense = (payload: { categoryId: string; amount: number; date: string; note?: string }) => {
+        dispatch(addExpense(payload));
+        setOpenExpenseModal(false);
+    };
     const categoriesById = useMemo(() => {
         const m = new Map<string, string>();
         categories.forEach((c) => m.set(c.id, c.name));
         return m;
     }, [categories]);
 
+    const defaultExpenseDate = useMemo(() => {
+        const monthIndex = months.indexOf(selectedMonth);
+        const y = Number(selectedYear);
+        const m = String(monthIndex + 1).padStart(2, "0");
+        return `${y}-${m}-01`;
+    }, [months, selectedMonth, selectedYear]);
+
+    const totalsForYear = useAppSelector(selectTotalsForYear(Number(selectedYear)));
     return {
         openCategoryModal,
         setOpenCategoryModal,
@@ -85,5 +96,8 @@ export const useViewModel = () => {
         onAddCategory,
         onRenameCategory,
         onDeleteCategory,
+        onAddExpense,
+        defaultExpenseDate,
+        totalsForYear,
     };
 };

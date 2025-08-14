@@ -9,6 +9,8 @@ import CardHeader from "@/app/components/card-header";
 import CardModalContainer from "@/app/components/card-modal-container";
 import { useViewModel } from "./useViewModel";
 import CategoryForm from "@/app/components/(forms)/category-form";
+import PrimaryBtn from "@/app/components/(buttons)/primary-btn";
+import ExpenseForm from "@/app/components/(forms)/expenses-form";
 
 const ExpensesPage = () => {
     const {
@@ -27,6 +29,9 @@ const ExpensesPage = () => {
         onAddCategory,
         onRenameCategory,
         onDeleteCategory,
+        onAddExpense,
+        defaultExpenseDate,
+        totalsForYear,
     } = useViewModel();
 
     return (
@@ -42,12 +47,8 @@ const ExpensesPage = () => {
                     <div className="flex justify-between items-center mb-2">
                         {/* componentize this */}
                         <div className="flex space-x-4">
-                            <button className="btn btn-outline btn-primary" onClick={() => setOpenCategoryModal(true)}>
-                                + Add Category
-                            </button>
-                            <button className="btn btn-outline btn-primary" onClick={() => setOpenExpenseModal(true)}>
-                                + Add Expense
-                            </button>
+                            <PrimaryBtn onClick={() => setOpenCategoryModal(true)} btnText="+ Add Category" />
+                            <PrimaryBtn onClick={() => setOpenExpenseModal(true)} btnText="+ Add Expense" />
                         </div>
 
                         <div className="flex gap-4">
@@ -74,7 +75,7 @@ const ExpensesPage = () => {
                             />
                         </div>
                     </div>
-                    {/* componentize this */}
+
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                         <CardHeader headerText="Total Balance" subText="$3,250.00" />
                         <CardHeader headerText="Income" subText="+$4,000.00" subTextStyle="text-green-600" />
@@ -123,39 +124,58 @@ const ExpensesPage = () => {
                             <tr className="text-xs text-gray-500 uppercase">
                                 <th className="py-2 px-3">Categories</th>
                                 {months.map((month) => (
-                                    <th key={month} className="py-2 px-3">
+                                    <th key={month} className="py-2 px-3 text-right">
                                         {month}
                                     </th>
                                 ))}
+                                <th className="py-2 px-3 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="text-sm text-gray-700">
-                            {categories.map((cat) => (
-                                <tr key={cat.id} className="border-t">
-                                    <td className="py-3 px-3 font-medium">{cat.name}</td>
-                                    {/* ...12 month cells go here, using your derived totals ... */}
-                                    <td className="py-3 px-3 text-right space-x-2">
-                                        <button
-                                            className="btn btn-xs"
-                                            onClick={() => onRenameCategory(cat.id, prompt("Rename:", cat.name) ?? cat.name)}
-                                        >
-                                            Rename
-                                        </button>
-                                        <button className="btn btn-xs btn-error" onClick={() => onDeleteCategory(cat.id)}>
-                                            Delete
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
+                            {categories.map((cat) => {
+                                const row = totalsForYear[cat.id] ?? Array(12).fill(0);
+                                const fmt = (n: number) =>
+                                    n ? n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "—";
+                                return (
+                                    <tr key={cat.id} className="border-t">
+                                        <td className="py-3 px-3 font-medium">{cat.name}</td>
+                                        {row.map((val, i) => (
+                                            <td key={i} className="py-3 px-3 text-right">
+                                                {fmt(val)}
+                                            </td>
+                                        ))}
+                                        <td className="py-3 px-3 text-right space-x-2 whitespace-nowrap">
+                                            <button
+                                                className="btn btn-xs"
+                                                onClick={() => {
+                                                    const next = prompt("Rename:", cat.name);
+                                                    if (next != null) onRenameCategory(cat.id, next);
+                                                }}
+                                            >
+                                                Rename
+                                            </button>
+                                            <button className="btn btn-xs btn-error" onClick={() => onDeleteCategory(cat.id)}>
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
             </div>
+
             <CardModalContainer open={openCategoryModal} onClose={() => setOpenCategoryModal(false)} title="Add Category">
                 <CategoryForm onSubmit={onAddCategory} onClose={() => setOpenCategoryModal(false)} categories={categories} />
             </CardModalContainer>
             <CardModalContainer open={openExpenseModal} onClose={() => setOpenExpenseModal(false)} title="Add Expense" buttonText="Close">
-                <p className="py-2">Put your form here.</p>
+                <ExpenseForm
+                    categories={categories}
+                    defaultDate={defaultExpenseDate}
+                    onSubmit={onAddExpense}
+                    onClose={() => setOpenExpenseModal(false)}
+                />
             </CardModalContainer>
             {/* <div className="flex-1 bg-red-400 min-h-[500px]">All Expenses section here</div> */}
         </MainContainer>
