@@ -2,7 +2,7 @@
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { addCategory, deleteCategory, selectCategoriesSorted, updateCategoryName } from "@/app/store/slice/categorySlice";
 import { addExpense, selectTotalsForYear } from "@/app/store/slice/expenseSlice";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 
 export const useViewModel = () => {
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -66,6 +66,20 @@ export const useViewModel = () => {
         dispatch(addExpense(payload));
         setOpenExpenseModal(false);
     };
+
+    const onAddExpensesBatch = useCallback(
+        (payload: { categoryId: string; items: { amount: number; date: string; note?: string }[] }) => {
+            const { categoryId, items } = payload;
+
+            // Otherwise, dispatch one-by-one:
+            items.forEach((it) => {
+                dispatch(addExpense({ categoryId, amount: it.amount, date: it.date, note: it.note }));
+            });
+
+            setOpenExpenseModal(false);
+        },
+        [dispatch]
+    );
     const categoriesById = useMemo(() => {
         const m = new Map<string, string>();
         categories.forEach((c) => m.set(c.id, c.name));
@@ -73,10 +87,10 @@ export const useViewModel = () => {
     }, [categories]);
 
     const defaultExpenseDate = useMemo(() => {
-        const monthIndex = months.indexOf(selectedMonth);
-        const y = Number(selectedYear);
-        const m = String(monthIndex + 1).padStart(2, "0");
-        return `${y}-${m}-01`;
+        const idx = months.indexOf(selectedMonth);
+        if (idx < 0 || !selectedYear) return new Date().toISOString().slice(0, 10);
+        const d = new Date(Number(selectedYear), idx, 1);
+        return d.toISOString().slice(0, 10);
     }, [months, selectedMonth, selectedYear]);
 
     const totalsForYear = useAppSelector(selectTotalsForYear(Number(selectedYear)));
@@ -99,5 +113,6 @@ export const useViewModel = () => {
         onAddExpense,
         defaultExpenseDate,
         totalsForYear,
+        onAddExpensesBatch,
     };
 };

@@ -32,6 +32,7 @@ const ExpensesPage = () => {
         onAddExpense,
         defaultExpenseDate,
         totalsForYear,
+        onAddExpensesBatch,
     } = useViewModel();
 
     return (
@@ -173,8 +174,8 @@ const ExpensesPage = () => {
                 <ExpenseForm
                     categories={categories}
                     defaultDate={defaultExpenseDate}
-                    onSubmit={onAddExpense}
                     onClose={() => setOpenExpenseModal(false)}
+                    onSubmit={onAddExpensesBatch}
                 />
             </CardModalContainer>
             {/* <div className="flex-1 bg-red-400 min-h-[500px]">All Expenses section here</div> */}
