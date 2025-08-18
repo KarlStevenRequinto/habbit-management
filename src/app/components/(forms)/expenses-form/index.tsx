@@ -2,6 +2,7 @@
 import React, { useMemo, useState } from "react";
 import type { Category } from "@/app/store/slice/categorySlice";
 import { nanoid } from "@reduxjs/toolkit";
+import { toLocalISO } from "@/app/helpers";
 
 type Draft = {
     uid: string; // local row id
@@ -15,15 +16,16 @@ type Props = {
     onSubmit: (data: { categoryId: string; items: { amount: number; date: string; note?: string }[] }) => void;
     onClose: () => void;
     defaultCategoryId?: string;
-    defaultDate?: string; // "YYYY-MM-DD" to prefill new rows (optional)
+    defaultDate?: string;
 };
 
 export default function ExpenseForm({ categories, onSubmit, onClose, defaultCategoryId, defaultDate }: Props) {
     const [categoryId, setCategoryId] = useState(defaultCategoryId ?? "");
+
     const mkDraft = () => ({
         uid: nanoid(),
         amount: "",
-        date: defaultDate ?? new Date().toISOString().slice(0, 10),
+        date: defaultDate ?? toLocalISO(new Date()), // always local today if no defaultDate
         note: "",
     });
     const [rows, setRows] = useState<Draft[]>([mkDraft()]);

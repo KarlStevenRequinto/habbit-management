@@ -1,4 +1,5 @@
 "use client";
+import { toLocalISO } from "@/app/helpers";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { addCategory, deleteCategory, selectCategoriesSorted, updateCategoryName } from "@/app/store/slice/categorySlice";
 import { addExpense, selectTotalsForYear } from "@/app/store/slice/expenseSlice";
@@ -19,7 +20,6 @@ export const useViewModel = () => {
     const fallbackMonth = now.toLocaleString("en-US", { month: "long" });
     const fallbackYear = String(now.getFullYear());
 
-    // options
     const months = useMemo(() => Array.from({ length: 12 }, (_, i) => new Date(0, i).toLocaleString("en-US", { month: "long" })), []);
     const years = useMemo(() => Array.from({ length: 10 }, (_, i) => String(new Date().getFullYear() - i)), []);
 
@@ -87,11 +87,8 @@ export const useViewModel = () => {
     }, [categories]);
 
     const defaultExpenseDate = useMemo(() => {
-        const idx = months.indexOf(selectedMonth);
-        if (idx < 0 || !selectedYear) return new Date().toISOString().slice(0, 10);
-        const d = new Date(Number(selectedYear), idx, 1);
-        return d.toISOString().slice(0, 10);
-    }, [months, selectedMonth, selectedYear]);
+        return toLocalISO(new Date()); // always today
+    }, []);
 
     const totalsForYear = useAppSelector(selectTotalsForYear(Number(selectedYear)));
     return {
