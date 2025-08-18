@@ -60,7 +60,7 @@ export default function ExpenseForm({ categories, onSubmit, onClose, defaultCate
     };
 
     return (
-        <form onSubmit={handleSubmit} className="w-full max-w-3xl">
+        <form onSubmit={handleSubmit} className="w-full h-full flex flex-col">
             {/* Category + Add Row button */}
             <div className="flex items-center gap-3 mb-4">
                 <div className="flex-1">
@@ -83,7 +83,7 @@ export default function ExpenseForm({ categories, onSubmit, onClose, defaultCate
             </div>
 
             {/* Rows */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
                 {rows.map((r, idx) => (
                     <div key={r.uid} className="rounded-xl border p-4">
                         <div className="flex items-center justify-between mb-3">
@@ -121,7 +121,7 @@ export default function ExpenseForm({ categories, onSubmit, onClose, defaultCate
             </div>
 
             {/* Footer */}
-            <div className="mt-6 flex items-center justify-between">
+            <div className="mt-auto pt-4 flex items-center justify-between border-t">
                 <div className="text-sm text-gray-500">
                     Total: <span className="font-semibold">₱{total.toFixed(2)}</span>
                 </div>

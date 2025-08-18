@@ -32,13 +32,25 @@ export default function CardModalContainer({ open, onClose, title, buttonText, c
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-[999] grid place-items-center " aria-modal="true" role="dialog">
+        <div className="fixed inset-0 z-[999] grid place-items-center" aria-modal="true" role="dialog">
             {/* Backdrop */}
             <div className="absolute inset-0 bg-black/20" />
+
             {/* Panel */}
-            <div ref={panelRef} className="relative w-11/12 max-w-5xl bg-white rounded-2xl shadow-xl p-6">
-                {title ? <h3 className="font-bold text-lg mb-2">{title}</h3> : null}
-                <div className="py-2 flex items-center justify-center">{children}</div>
+            <div
+                ref={panelRef}
+                // ⬇️ key changes: max-h, flex column, remove full padding from panel
+                className="bg-white relative w-11/12 max-w-5xl h-[85vh] rounded-2xl shadow-xl max-h-[85vh] flex flex-col"
+            >
+                {/* Header (non-scrollable) */}
+                {title ? (
+                    <div className="px-6 pt-6 pb-2 shrink-0">
+                        <h3 className="font-bold text-lg">{title}</h3>
+                    </div>
+                ) : null}
+
+                {/* Scrollable content */}
+                <div className="px-6 pb-6 pt-2 overflow-y-auto flex-1 min-h-0 overscroll-contain">{children}</div>
             </div>
         </div>
     );
