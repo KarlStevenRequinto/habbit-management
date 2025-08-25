@@ -1,16 +1,17 @@
 "use client";
-import React, { useState } from "react";
-
-import MainContainer from "@/app/components/main-container";
+import React from "react";
+import { useViewModel } from "./useViewModel";
 import { areaChartData, barChartData } from "@/app/constants/chartData";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, BarChart, Bar } from "recharts";
+
+import MainContainer from "@/app/components/main-container";
 import DropDownSelect from "@/app/components/dropdown-select";
 import CardHeader from "@/app/components/card-header";
 import CardModalContainer from "@/app/components/card-modal-container";
-import { useViewModel } from "./useViewModel";
 import CategoryForm from "@/app/components/(forms)/category-form";
 import PrimaryBtn from "@/app/components/(buttons)/primary-btn";
 import ExpenseForm from "@/app/components/(forms)/expenses-form";
+import TitleHeader from "@/app/components/title-header";
 
 const ExpensesPage = () => {
     const {
@@ -39,9 +40,7 @@ const ExpensesPage = () => {
         <MainContainer>
             {/* header */}
             <div className="bg-gray-100 p-2 h-full gap-2 flex flex-col">
-                <header className="flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-gray-800">Expense Tracker</h1>
-                </header>
+                <TitleHeader title="Expense Tracker" />
 
                 {/* filter */}
                 <div className="py-2">
@@ -86,31 +85,39 @@ const ExpensesPage = () => {
 
                 {/* graphs */}
                 <div className="bg-white rounded-xl mb-2  flex-2 flex flex-col lg:flex-row w-full ">
-                    <div className="flex-1 flex justify-center items-center">
-                        <AreaChart width={730} height={250} data={areaChartData}>
-                            <defs>
-                                <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                                    <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <Tooltip />
-                            <Area type="monotone" dataKey="uv" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
-                        </AreaChart>
+                    <div className="flex-1 flex flex-col items-stretch">
+                        <h2 className="text-lg font-semibold text-center mb-2">Daily Expense</h2>
+                        <div className="flex-1">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={areaChartData} margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <Tooltip />
+                                    <Area type="monotone" dataKey="uv" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
-                    <div className="flex-1 bg-green-200">
-                        <ResponsiveContainer>
-                            <BarChart width={600} height={300} data={barChartData}>
-                                <XAxis dataKey="name" stroke="#8884d8" />
-                                <YAxis />
-                                <Tooltip />
-                                <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                                <Bar dataKey="val" fill="#8884d8" barSize={30} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                    <div className="flex-1 flex flex-col items-stretch">
+                        <h2 className="text-lg font-semibold text-center mb-2">By Category</h2>
+                        <div className="flex-1">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <BarChart data={barChartData} margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
+                                    <XAxis dataKey="name" stroke="#8884d8" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                                    <Bar dataKey="val" fill="#8884d8" barSize={30} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
                 </div>
 
@@ -118,7 +125,6 @@ const ExpensesPage = () => {
                 <div className="flex-1 bg-white rounded-xl shadow-sm p-4">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-lg font-bold text-gray-800">Projects</h2>
-                        <span className="text-sm text-green-500">30 done this month</span>
                     </div>
                     <table className="w-full text-left table-auto">
                         <thead>
