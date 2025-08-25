@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useViewModel } from "./useViewModel";
-import { areaChartData, barChartData } from "@/app/constants/chartData";
+import { barChartData } from "@/app/constants/chartData";
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis, ResponsiveContainer, BarChart, Bar } from "recharts";
 
 import MainContainer from "@/app/components/main-container";
@@ -34,6 +34,7 @@ const ExpensesPage = () => {
         defaultExpenseDate,
         totalsForYear,
         onAddExpensesBatch,
+        areaData,
     } = useViewModel();
 
     return (
@@ -89,7 +90,7 @@ const ExpensesPage = () => {
                         <h2 className="text-lg font-semibold text-center mb-2">Daily Expense</h2>
                         <div className="flex-1">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={areaChartData} margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
+                                <AreaChart data={areaData} margin={{ top: 0, right: 16, bottom: 0, left: 0 }}>
                                     <defs>
                                         <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />

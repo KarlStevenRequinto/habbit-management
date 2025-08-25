@@ -11,7 +11,11 @@ export type Expense = {
 
 type ExpensesState = { items: Expense[] };
 
-const initialState: ExpensesState = { items: [] }; // ✅ empty initial value
+const initialState: ExpensesState = { items: [] };
+
+const monthShort = (i: number) => new Date(2000, i, 1).toLocaleString("en-US", { month: "short" }); // Jan..Dec
+
+const daysInMonth = (year: number, monthIdx: number) => new Date(year, monthIdx + 1, 0).getDate();
 
 const expensesSlice = createSlice({
     name: "expenses",
@@ -51,6 +55,30 @@ export const selectTotalsForYear = (year: number) =>
             out[e.categoryId][m] += e.amount;
         }
         return out;
+    });
+
+export const selectDailyTotalsForMonth = (year: number, monthIdx: number) =>
+    createSelector([selectAllExpenses], (items) => {
+        if (!Number.isFinite(year) || monthIdx < 0 || monthIdx > 11) return [];
+        const n = daysInMonth(year, monthIdx);
+        const labelMon = monthShort(monthIdx);
+
+        const rows = Array.from({ length: n }, (_, i) => ({
+            day: i + 1,
+            name: `${labelMon}-${i + 1}`,
+            uv: 0,
+        }));
+
+        for (const e of items) {
+            if (!e?.date) continue;
+
+            const [y, m, d] = String(e.date).split("-").map(Number);
+            if (y === year && m - 1 === monthIdx) {
+                const idx = (d ?? 1) - 1;
+                if (rows[idx]) rows[idx].uv += Number(e.amount) || 0;
+            }
+        }
+        return rows;
     });
 
 export default expensesSlice.reducer;

@@ -2,7 +2,7 @@
 import { toLocalISO } from "@/app/helpers";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 import { addCategory, deleteCategory, selectCategoriesSorted, updateCategoryName } from "@/app/store/slice/categorySlice";
-import { addExpense, selectTotalsForYear } from "@/app/store/slice/expenseSlice";
+import { addExpense, selectTotalsForYear, selectDailyTotalsForMonth, selectAllExpenses } from "@/app/store/slice/expenseSlice";
 import { useState, useMemo, useEffect, useCallback } from "react";
 
 export const useViewModel = () => {
@@ -37,6 +37,9 @@ export const useViewModel = () => {
         return fallbackYear;
     });
 
+    const monthIdx = useMemo(() => months.indexOf(selectedMonth), [months, selectedMonth]);
+    const dailySelector = useMemo(() => selectDailyTotalsForMonth(Number(selectedYear), monthIdx), [selectedYear, monthIdx]);
+    const areaData = useAppSelector(dailySelector);
     // persist whenever it changes
     useEffect(() => {
         if (selectedMonth) localStorage.setItem(MONTH_KEY, selectedMonth);
@@ -111,5 +114,6 @@ export const useViewModel = () => {
         defaultExpenseDate,
         totalsForYear,
         onAddExpensesBatch,
+        areaData,
     };
 };
